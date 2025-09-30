@@ -52,6 +52,7 @@ class SettingsFragment : Fragment() {
     private fun setupClickListeners() {
         hydrationSwitch.setOnCheckedChangeListener { _, isChecked ->
             preferencesManager.setHydrationEnabled(isChecked)
+            com.example.wellnessapp.notification.HydrationReminderManager.scheduleReminder(requireContext())
         }
         
         changeIntervalButton.setOnClickListener {
@@ -85,6 +86,7 @@ class SettingsFragment : Fragment() {
             .setSingleChoiceItems(intervals, selectedIndex) { dialog, which ->
                 preferencesManager.setHydrationInterval(values[which])
                 updateIntervalText()
+                com.example.wellnessapp.notification.HydrationReminderManager.updateReminderInterval(requireContext())
                 dialog.dismiss()
             }
             .setNegativeButton("Cancel", null)

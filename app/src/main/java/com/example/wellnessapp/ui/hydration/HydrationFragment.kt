@@ -40,6 +40,9 @@ class HydrationFragment : Fragment() {
         initViews(view)
         setupClickListeners()
         loadWaterIntake()
+        
+        // Initialize hydration reminders
+        com.example.wellnessapp.notification.HydrationReminderManager.scheduleReminder(requireContext())
     }
     
     private fun initViews(view: View) {

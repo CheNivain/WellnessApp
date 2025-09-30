@@ -104,12 +104,17 @@ class HabitsFragment : Fragment() {
         
         preferencesManager.updateHabit(habit)
         updateProgress()
+        
+        // Update widget
+        com.example.wellnessapp.widget.HabitWidgetProvider.updateWidget(requireContext())
     }
     
     private fun showAddHabitDialog() {
         val dialog = AddHabitDialogFragment { habit ->
             preferencesManager.addHabit(habit)
             loadHabits()
+            // Update widget
+            com.example.wellnessapp.widget.HabitWidgetProvider.updateWidget(requireContext())
         }
         dialog.show(parentFragmentManager, "AddHabitDialog")
     }
