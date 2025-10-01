@@ -91,6 +91,7 @@
 - Hydration reminders persist after app restart
 - Login state maintained
 - Onboarding completion tracked
+- **Onboarding Reset on Logout**: When users log out, the onboarding completion flag is reset, ensuring they see onboarding screens again when logging back in
 
 ### Responsive UI ✅
 - **Phone Layouts**: Portrait and landscape optimized
