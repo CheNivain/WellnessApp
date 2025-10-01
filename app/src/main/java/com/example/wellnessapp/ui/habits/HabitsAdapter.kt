@@ -7,13 +7,16 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wellnessapp.R
 import com.example.wellnessapp.data.models.Habit
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.checkbox.MaterialCheckBox
 import java.text.SimpleDateFormat
 import java.util.*
 
 class HabitsAdapter(
     private val habits: List<Habit>,
-    private val onHabitToggled: (Habit, Boolean) -> Unit
+    private val onHabitToggled: (Habit, Boolean) -> Unit,
+    private val onEditHabit: (Habit) -> Unit,
+    private val onDeleteHabit: (Habit) -> Unit
 ) : RecyclerView.Adapter<HabitsAdapter.HabitViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {
@@ -33,6 +36,8 @@ class HabitsAdapter(
         private val habitDescription: TextView = itemView.findViewById(R.id.habit_description)
         private val habitCheckbox: MaterialCheckBox = itemView.findViewById(R.id.habit_checkbox)
         private val createdDate: TextView = itemView.findViewById(R.id.created_date)
+        private val editButton: MaterialButton = itemView.findViewById(R.id.edit_habit_button)
+        private val deleteButton: MaterialButton = itemView.findViewById(R.id.delete_habit_button)
 
         fun bind(habit: Habit) {
             habitName.text = habit.name
@@ -58,6 +63,14 @@ class HabitsAdapter(
             
             itemView.setOnClickListener {
                 habitCheckbox.isChecked = !habitCheckbox.isChecked
+            }
+            
+            editButton.setOnClickListener {
+                onEditHabit(habit)
+            }
+            
+            deleteButton.setOnClickListener {
+                onDeleteHabit(habit)
             }
         }
     }

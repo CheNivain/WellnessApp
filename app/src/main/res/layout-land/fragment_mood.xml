@@ -11,12 +11,13 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Header Section -->
+        <!-- Header and Action Buttons in one row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <TextView
                 android:layout_width="0dp"
@@ -27,22 +28,12 @@
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
-        </LinearLayout>
-
-        <!-- Action Buttons -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:orientation="horizontal">
-
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/share_mood_button"
                 style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:layout_weight="1"
                 android:text="@string/share_mood"
                 android:textAllCaps="false"
                 app:cornerRadius="12dp"
@@ -52,10 +43,8 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/view_trends_button"
                 style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
                 android:text="@string/mood_trends"
                 android:textAllCaps="false"
                 app:cornerRadius="12dp"

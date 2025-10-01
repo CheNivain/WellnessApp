@@ -130,6 +130,12 @@ class PreferencesManager(context: Context) {
         entries.add(moodEntry)
         saveMoodEntries(entries)
     }
+    
+    fun deleteMoodEntry(moodId: String) {
+        val entries = getMoodEntries().toMutableList()
+        entries.removeIf { it.id == moodId }
+        saveMoodEntries(entries)
+    }
 
     // Settings
     fun setHydrationInterval(minutes: Int) {

@@ -3,27 +3,32 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     
-    <!-- Wellness Theme Colors -->
+    <!-- Wellness Theme Colors - Enhanced -->
     <color name="primary_color">#4CAF50</color>
     <color name="primary_dark">#388E3C</color>
+    <color name="primary_light">#81C784</color>
     <color name="accent_color">#FF9800</color>
+    <color name="accent_light">#FFB74D</color>
     
-    <!-- Background Colors -->
+    <!-- Background Colors - Enhanced -->
     <color name="background_light">#F8F9FA</color>
     <color name="background_dark">#121212</color>
     <color name="surface_color">#FFFFFF</color>
+    <color name="surface_light">#FAFAFA</color>
     
     <!-- Text Colors -->
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
     <color name="hint_text">#BDBDBD</color>
+    <color name="text_on_primary">#FFFFFF</color>
     
-    <!-- Mood Colors -->
-    <color name="mood_very_sad">#FF5722</color>
+    <!-- Mood Colors - Enhanced Vibrant -->
+    <color name="mood_very_sad">#F44336</color>
     <color name="mood_sad">#FF9800</color>
     <color name="mood_neutral">#FFC107</color>
     <color name="mood_happy">#8BC34A</color>
     <color name="mood_very_happy">#4CAF50</color>
+    <color name="mood_excellent">#00BCD4</color>
     
     <!-- Status Colors -->
     <color name="success_color">#4CAF50</color>
@@ -34,4 +39,18 @@
     <!-- Widget Colors -->
     <color name="widget_background">#FFFFFF</color>
     <color name="widget_text">#212121</color>
+    
+    <!-- Gradient Colors -->
+    <color name="gradient_start">#E8F5E9</color>
+    <color name="gradient_end">#C8E6C9</color>
+    <color name="gradient_primary_start">#66BB6A</color>
+    <color name="gradient_primary_end">#4CAF50</color>
+    
+    <!-- Card Colors -->
+    <color name="card_background">#FFFFFF</color>
+    <color name="card_divider">#E0E0E0</color>
+    
+    <!-- Button Colors -->
+    <color name="button_primary">#4CAF50</color>
+    <color name="button_secondary">#FF9800</color>
 </resources>

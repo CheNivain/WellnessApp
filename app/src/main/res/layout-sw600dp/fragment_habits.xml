@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/fragment_background"
-    android:padding="16dp">
+    android:padding="24dp">
 
     <!-- Progress Section -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         app:cardCornerRadius="20dp"
         app:cardElevation="8dp"
         app:strokeWidth="0dp">
@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp"
+            android:padding="32dp"
             android:background="@drawable/progress_card_gradient">
 
             <TextView
@@ -28,30 +28,30 @@
                 android:layout_height="wrap_content"
                 android:text="@string/daily_progress"
                 android:textColor="@color/primary_text"
-                android:textSize="20sp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <com.google.android.material.progressindicator.CircularProgressIndicator
                     android:id="@+id/progress_indicator"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
                     android:progress="0"
                     app:indicatorColor="@color/primary_color"
                     app:trackColor="@color/hint_text"
-                    app:trackThickness="10dp"
-                    app:indicatorSize="100dp" />
+                    app:trackThickness="12dp"
+                    app:indicatorSize="120dp" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
+                    android:layout_marginStart="32dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -61,17 +61,17 @@
                         android:layout_height="wrap_content"
                         android:text="0%"
                         android:textColor="@color/primary_color"
-                        android:textSize="32sp"
+                        android:textSize="48sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/completed_today_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="8dp"
                         android:text="@string/completed_today"
                         android:textColor="@color/secondary_text"
-                        android:textSize="16sp" />
+                        android:textSize="18sp" />
 
                 </LinearLayout>
 
@@ -85,7 +85,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -95,7 +95,7 @@
             android:layout_weight="1"
             android:text="Your Habits"
             android:textColor="@color/primary_text"
-            android:textSize="22sp"
+            android:textSize="28sp"
             android:textStyle="bold" />
 
         <com.google.android.material.button.MaterialButton
@@ -103,8 +103,11 @@
             style="@style/Widget.Material3.Button.ElevatedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="12dp"
             android:text="@string/add_habit"
             android:textAllCaps="false"
+            android:textSize="16sp"
             app:backgroundTint="@color/primary_color"
             app:icon="@drawable/ic_add"
             app:cornerRadius="12dp"
@@ -112,7 +115,7 @@
 
     </LinearLayout>
 
-    <!-- Habits List -->
+    <!-- Habits List with GridLayoutManager support -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/habits_recycler_view"
         android:layout_width="match_parent"

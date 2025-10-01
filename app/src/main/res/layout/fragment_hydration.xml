@@ -1,130 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@drawable/hydration_background"
+    android:fillViewport="true">
 
-    <!-- Header -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:gravity="center"
-        android:text="@string/water_intake"
-        android:textColor="@color/primary_text"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <!-- Water Icon -->
-    <ImageView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="24dp"
-        android:src="@drawable/ic_water"
-        android:tint="@color/primary_color" />
-
-    <!-- Progress Section -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp">
-
-        <LinearLayout
+        <!-- Header -->
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp">
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:text="@string/water_intake"
+            android:textColor="@color/primary_text"
+            android:textSize="28sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/water_count_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="0 / 8 glasses"
-                android:textColor="@color/primary_text"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+        <!-- Water Icon -->
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="24dp"
+            android:src="@drawable/ic_water"
+            android:tint="@color/primary_color" />
 
-            <com.google.android.material.progressindicator.LinearProgressIndicator
-                android:id="@+id/progress_indicator"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:progress="0"
-                app:indicatorColor="@color/primary_color"
-                app:trackColor="@color/hint_text"
-                app:trackThickness="8dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:text="Daily Goal: 8 glasses"
-                android:textColor="@color/secondary_text"
-                android:textSize="14sp" />
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
-
-    <!-- Action Buttons -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/drink_water_button"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/drink_water"
-        android:textSize="16sp"
-        app:backgroundTint="@color/primary_color"
-        app:icon="@drawable/ic_water" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/reset_button"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="Reset Today"
-        android:textSize="16sp"
-        style="@style/Widget.Material3.Button.OutlinedButton"
-        app:strokeColor="@color/primary_color" />
-
-    <!-- Hydration Tips -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="2dp">
-
-        <LinearLayout
+        <!-- Progress Section -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="💡 Hydration Tips"
-                android:textColor="@color/primary_text"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:background="@drawable/hydration_card_gradient"
+                android:orientation="vertical"
+                android:padding="24dp">
 
-            <TextView
+                <TextView
+                    android:id="@+id/water_count_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0 / 8 glasses"
+                    android:textColor="@color/primary_text"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/progress_indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:progress="0"
+                    app:indicatorColor="@color/primary_color"
+                    app:trackColor="@color/hint_text"
+                    app:trackCornerRadius="4dp"
+                    app:trackThickness="12dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center"
+                    android:text="Daily Goal: 8 glasses"
+                    android:textColor="@color/secondary_text"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Action Buttons -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/drink_water_button"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/drink_water"
+            android:textSize="18sp"
+            android:textAllCaps="false"
+            app:backgroundTint="@color/primary_color"
+            app:cornerRadius="16dp"
+            app:elevation="4dp"
+            app:icon="@drawable/ic_water" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/reset_button"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Reset Today"
+            android:textSize="16sp"
+            android:textAllCaps="false"
+            app:cornerRadius="16dp"
+            app:strokeColor="@color/primary_color"
+            app:strokeWidth="2dp" />
+
+        <!-- Hydration Tips -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="• Drink water first thing in the morning\n• Keep a water bottle nearby\n• Set reminders throughout the day\n• Drink before you feel thirsty"
-                android:textColor="@color/secondary_text"
-                android:textSize="14sp" />
+                android:orientation="vertical"
+                android:padding="20dp">
 
-        </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="💡 Hydration Tips"
+                    android:textColor="@color/primary_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-    </androidx.cardview.widget.CardView>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:lineSpacingExtra="4dp"
+                    android:text="• Drink water first thing in the morning\n• Keep a water bottle nearby\n• Set reminders throughout the day\n• Drink before you feel thirsty"
+                    android:textColor="@color/secondary_text"
+                    android:textSize="15sp" />
 
-</LinearLayout>
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+</ScrollView>
