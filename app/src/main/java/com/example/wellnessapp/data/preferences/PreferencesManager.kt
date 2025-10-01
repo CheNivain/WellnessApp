@@ -66,7 +66,10 @@ class PreferencesManager(context: Context) {
     }
 
     fun logout() {
-        prefs.edit().putBoolean(KEY_IS_LOGGED_IN, false).apply()
+        prefs.edit()
+            .putBoolean(KEY_IS_LOGGED_IN, false)
+            .putBoolean(KEY_ONBOARDING_COMPLETED, false)
+            .apply()
     }
 
     fun isLoggedIn(): Boolean = prefs.getBoolean(KEY_IS_LOGGED_IN, false)
