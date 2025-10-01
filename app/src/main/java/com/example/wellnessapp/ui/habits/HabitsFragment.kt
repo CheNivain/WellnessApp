@@ -73,7 +73,14 @@ class HabitsFragment : Fragment() {
                 showDeleteConfirmation(habit)
             }
         )
-        habitsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        
+        // Use GridLayoutManager for tablets (sw600dp and above)
+        val spanCount = resources.getInteger(R.integer.habits_grid_columns)
+        habitsRecyclerView.layoutManager = if (spanCount > 1) {
+            androidx.recyclerview.widget.GridLayoutManager(requireContext(), spanCount)
+        } else {
+            LinearLayoutManager(requireContext())
+        }
         habitsRecyclerView.adapter = habitsAdapter
     }
     

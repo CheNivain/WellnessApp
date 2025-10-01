@@ -60,7 +60,14 @@ class MoodFragment : Fragment() {
         moodAdapter = MoodAdapter(moodEntries) { moodEntry ->
             showDeleteConfirmation(moodEntry)
         }
-        moodRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        
+        // Use GridLayoutManager for tablets (sw600dp and above)
+        val spanCount = resources.getInteger(R.integer.mood_grid_columns)
+        moodRecyclerView.layoutManager = if (spanCount > 1) {
+            androidx.recyclerview.widget.GridLayoutManager(requireContext(), spanCount)
+        } else {
+            LinearLayoutManager(requireContext())
+        }
         moodRecyclerView.adapter = moodAdapter
     }
     

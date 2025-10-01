@@ -21,7 +21,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class MainActivity : AppCompatActivity() {
     
     private lateinit var preferencesManager: PreferencesManager
-    private lateinit var bottomNavigation: BottomNavigationView
+    private var bottomNavigation: BottomNavigationView? = null
+    private var navigationRail: com.google.android.material.navigationrail.NavigationRailView? = null
     private lateinit var shakeDetector: ShakeDetector
     private lateinit var stepCounter: StepCounter
     
@@ -55,7 +56,9 @@ class MainActivity : AppCompatActivity() {
     
     private fun setupBottomNavigation() {
         bottomNavigation = findViewById(R.id.bottom_navigation)
-        bottomNavigation.setOnItemSelectedListener { item ->
+        navigationRail = findViewById(R.id.navigation_rail)
+        
+        val itemSelectedListener = { item: android.view.MenuItem ->
             when (item.itemId) {
                 R.id.nav_habits -> {
                     replaceFragment(HabitsFragment())
@@ -76,6 +79,9 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+        
+        bottomNavigation?.setOnItemSelectedListener(itemSelectedListener)
+        navigationRail?.setOnItemSelectedListener(itemSelectedListener)
     }
     
     private fun setupSensors() {
