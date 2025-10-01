@@ -88,7 +88,7 @@ class LoginActivity : AppCompatActivity() {
         val password = passwordEditText.text.toString().trim()
         
         if (validateInput(username, password)) {
-            if (preferencesManager.login(username, password)) {
+            if (preferencesManager.signup(username, password)) {
                 Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show()
                 navigateToMainFlow()
             } else {

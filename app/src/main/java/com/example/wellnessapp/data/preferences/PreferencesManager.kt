@@ -65,6 +65,16 @@ class PreferencesManager(context: Context) {
         }
     }
 
+    fun signup(username: String, password: String): Boolean {
+        // Save new credentials (overwrites existing if any)
+        prefs.edit()
+            .putString(KEY_USERNAME, username)
+            .putString(KEY_PASSWORD, password)
+            .putBoolean(KEY_IS_LOGGED_IN, true)
+            .apply()
+        return true
+    }
+
     fun logout() {
         prefs.edit()
             .putBoolean(KEY_IS_LOGGED_IN, false)
