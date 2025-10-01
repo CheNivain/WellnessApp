@@ -57,7 +57,9 @@ class MoodFragment : Fragment() {
     }
     
     private fun setupRecyclerView() {
-        moodAdapter = MoodAdapter(moodEntries)
+        moodAdapter = MoodAdapter(moodEntries) { moodEntry ->
+            showDeleteConfirmation(moodEntry)
+        }
         moodRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         moodRecyclerView.adapter = moodAdapter
     }
@@ -122,5 +124,17 @@ class MoodFragment : Fragment() {
     private fun showMoodTrends() {
         val dialog = MoodTrendsDialogFragment(moodEntries)
         dialog.show(parentFragmentManager, "MoodTrendsDialog")
+    }
+    
+    private fun showDeleteConfirmation(moodEntry: MoodEntry) {
+        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("Delete Mood Entry")
+            .setMessage("Are you sure you want to delete this mood entry?")
+            .setPositiveButton("Delete") { _, _ ->
+                preferencesManager.deleteMoodEntry(moodEntry.id)
+                loadMoodEntries()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 }

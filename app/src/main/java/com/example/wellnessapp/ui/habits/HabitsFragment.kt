@@ -61,9 +61,18 @@ class HabitsFragment : Fragment() {
     }
     
     private fun setupRecyclerView() {
-        habitsAdapter = HabitsAdapter(habits) { habit, completed ->
-            toggleHabitCompletion(habit, completed)
-        }
+        habitsAdapter = HabitsAdapter(
+            habits = habits,
+            onHabitToggled = { habit, completed ->
+                toggleHabitCompletion(habit, completed)
+            },
+            onEditHabit = { habit ->
+                showEditHabitDialog(habit)
+            },
+            onDeleteHabit = { habit ->
+                showDeleteConfirmation(habit)
+            }
+        )
         habitsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         habitsRecyclerView.adapter = habitsAdapter
     }
@@ -117,5 +126,29 @@ class HabitsFragment : Fragment() {
             com.example.wellnessapp.widget.HabitWidgetProvider.updateWidget(requireContext())
         }
         dialog.show(parentFragmentManager, "AddHabitDialog")
+    }
+    
+    private fun showEditHabitDialog(habit: Habit) {
+        val dialog = EditHabitDialogFragment(habit) { updatedHabit ->
+            preferencesManager.updateHabit(updatedHabit)
+            loadHabits()
+            // Update widget
+            com.example.wellnessapp.widget.HabitWidgetProvider.updateWidget(requireContext())
+        }
+        dialog.show(parentFragmentManager, "EditHabitDialog")
+    }
+    
+    private fun showDeleteConfirmation(habit: Habit) {
+        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("Delete Habit")
+            .setMessage("Are you sure you want to delete \"${habit.name}\"?")
+            .setPositiveButton("Delete") { _, _ ->
+                preferencesManager.deleteHabit(habit.id)
+                loadHabits()
+                // Update widget
+                com.example.wellnessapp.widget.HabitWidgetProvider.updateWidget(requireContext())
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 }

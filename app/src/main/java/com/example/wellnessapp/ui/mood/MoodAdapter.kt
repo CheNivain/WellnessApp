@@ -7,11 +7,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wellnessapp.R
 import com.example.wellnessapp.data.models.MoodEntry
+import com.google.android.material.button.MaterialButton
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MoodAdapter(
-    private val moodEntries: List<MoodEntry>
+    private val moodEntries: List<MoodEntry>,
+    private val onDeleteMood: (MoodEntry) -> Unit
 ) : RecyclerView.Adapter<MoodAdapter.MoodViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoodViewHolder {
@@ -32,6 +34,7 @@ class MoodAdapter(
         private val moodNote: TextView = itemView.findViewById(R.id.mood_note)
         private val moodDate: TextView = itemView.findViewById(R.id.mood_date)
         private val moodTime: TextView = itemView.findViewById(R.id.mood_time)
+        private val deleteButton: MaterialButton = itemView.findViewById(R.id.delete_mood_button)
 
         fun bind(moodEntry: MoodEntry) {
             moodEmoji.text = moodEntry.emoji
@@ -50,6 +53,10 @@ class MoodAdapter(
             
             moodDate.text = dateFormat.format(date)
             moodTime.text = timeFormat.format(date)
+            
+            deleteButton.setOnClickListener {
+                onDeleteMood(moodEntry)
+            }
         }
     }
 }
