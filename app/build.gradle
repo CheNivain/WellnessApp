@@ -24,13 +24,23 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    // Fix: Update Java compatibility to VERSION_17
+    // This ensures the app uses Java 17 features and bytecode
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
+    // Fix: Update Kotlin JVM target to 17 to match Java compatibility
+    // This prevents "Unknown Kotlin JVM target" errors
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
+}
+
+// Fix: Configure kapt to use JVM target 17
+// This prevents kapt annotation processing errors with Java 17 bytecode
+kapt {
+    correctErrorTypes = true
 }
 
 dependencies {
