@@ -6,8 +6,11 @@ buildscript {
         mavenCentral()
     }
     dependencies {
+        // Fix: Keep AGP at 7.4.2 as specified in requirements
         classpath 'com.android.tools.build:gradle:7.4.2'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10'
+        // Fix: Upgrade Kotlin plugin to 1.9.10 for better Java 17 support
+        // Kotlin 1.9.10 is stable and works well with AGP 7.4.2
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.10'
     }
 }
 
