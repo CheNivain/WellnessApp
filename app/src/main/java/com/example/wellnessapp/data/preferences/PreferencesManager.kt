@@ -25,13 +25,7 @@ class PreferencesManager(context: Context) {
         // Onboarding
         private const val KEY_ONBOARDING_COMPLETED = "onboarding_completed"
 
-        // Habits
-        private const val KEY_HABITS = "habits"
-
-        // Moods
-        private const val KEY_MOOD_ENTRIES = "mood_entries"
-
-        // Settings
+        // Settings - Lightweight preferences only
         private const val KEY_HYDRATION_INTERVAL = "hydration_interval"
         private const val KEY_HYDRATION_ENABLED = "hydration_enabled"
         private const val KEY_STEP_GOAL = "step_goal"
@@ -93,64 +87,7 @@ class PreferencesManager(context: Context) {
 
     fun isOnboardingCompleted(): Boolean = prefs.getBoolean(KEY_ONBOARDING_COMPLETED, false)
 
-    // Habits
-    fun saveHabits(habits: List<Habit>) {
-        val json = gson.toJson(habits)
-        prefs.edit().putString(KEY_HABITS, json).apply()
-    }
-
-    fun getHabits(): List<Habit> {
-        val json = prefs.getString(KEY_HABITS, null) ?: return emptyList()
-        val type = object : TypeToken<List<Habit>>() {}.type
-        return gson.fromJson(json, type)
-    }
-
-    fun addHabit(habit: Habit) {
-        val habits = getHabits().toMutableList()
-        habits.add(habit)
-        saveHabits(habits)
-    }
-
-    fun updateHabit(updatedHabit: Habit) {
-        val habits = getHabits().toMutableList()
-        val index = habits.indexOfFirst { it.id == updatedHabit.id }
-        if (index != -1) {
-            habits[index] = updatedHabit
-            saveHabits(habits)
-        }
-    }
-
-    fun deleteHabit(habitId: String) {
-        val habits = getHabits().toMutableList()
-        habits.removeIf { it.id == habitId }
-        saveHabits(habits)
-    }
-
-    // Mood entries
-    fun saveMoodEntries(moodEntries: List<MoodEntry>) {
-        val json = gson.toJson(moodEntries)
-        prefs.edit().putString(KEY_MOOD_ENTRIES, json).apply()
-    }
-
-    fun getMoodEntries(): List<MoodEntry> {
-        val json = prefs.getString(KEY_MOOD_ENTRIES, null) ?: return emptyList()
-        val type = object : TypeToken<List<MoodEntry>>() {}.type
-        return gson.fromJson(json, type)
-    }
-
-    fun addMoodEntry(moodEntry: MoodEntry) {
-        val entries = getMoodEntries().toMutableList()
-        entries.add(moodEntry)
-        saveMoodEntries(entries)
-    }
-    
-    fun deleteMoodEntry(moodId: String) {
-        val entries = getMoodEntries().toMutableList()
-        entries.removeIf { it.id == moodId }
-        saveMoodEntries(entries)
-    }
-
-    // Settings
+    // Settings - Lightweight preferences only
     fun setHydrationInterval(minutes: Int) {
         prefs.edit().putInt(KEY_HYDRATION_INTERVAL, minutes).apply()
     }

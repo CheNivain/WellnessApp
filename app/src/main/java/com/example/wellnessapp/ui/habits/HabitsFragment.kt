@@ -5,20 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wellnessapp.R
 import com.example.wellnessapp.data.models.Habit
-import com.example.wellnessapp.data.preferences.PreferencesManager
+import com.example.wellnessapp.data.database.AppDatabase
+import com.example.wellnessapp.data.database.entities.HabitEntity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import android.widget.TextView
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
 class HabitsFragment : Fragment() {
     
-    private lateinit var preferencesManager: PreferencesManager
+    private lateinit var database: AppDatabase
     private lateinit var habitsRecyclerView: RecyclerView
     private lateinit var addHabitButton: MaterialButton
     private lateinit var progressIndicator: CircularProgressIndicator
@@ -39,7 +42,7 @@ class HabitsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        preferencesManager = PreferencesManager(requireContext())
+        database = AppDatabase.getDatabase(requireContext())
         
         initViews(view)
         setupRecyclerView()
@@ -91,10 +94,30 @@ class HabitsFragment : Fragment() {
     }
     
     private fun loadHabits() {
-        habits.clear()
-        habits.addAll(preferencesManager.getHabits())
-        habitsAdapter.notifyDataSetChanged()
-        updateProgress()
+        lifecycleScope.launch {
+            val habitEntities = database.habitDao().getAllHabits()
+            habits.clear()
+            // Group habits by name and aggregate completed dates
+            val habitMap = mutableMapOf<String, Habit>()
+            for (entity in habitEntities) {
+                val key = "${entity.name}_${entity.description}_${entity.createdDate}"
+                if (!habitMap.containsKey(key)) {
+                    habitMap[key] = Habit(
+                        id = entity.name + entity.createdDate.toString(),
+                        name = entity.name,
+                        description = entity.description,
+                        createdDate = entity.createdDate,
+                        completedDates = mutableSetOf()
+                    )
+                }
+                if (entity.isCompleted) {
+                    habitMap[key]?.completedDates?.add(entity.date)
+                }
+            }
+            habits.addAll(habitMap.values)
+            habitsAdapter.notifyDataSetChanged()
+            updateProgress()
+        }
     }
     
     private fun updateProgress() {
@@ -112,35 +135,84 @@ class HabitsFragment : Fragment() {
     private fun toggleHabitCompletion(habit: Habit, completed: Boolean) {
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         
-        if (completed) {
-            habit.completedDates.add(today)
-        } else {
-            habit.completedDates.remove(today)
+        lifecycleScope.launch {
+            // Find or create habit entity for today
+            val existingHabits = database.habitDao().getHabitsByDate(today)
+            val existingHabit = existingHabits.find { 
+                it.name == habit.name && it.description == habit.description 
+            }
+            
+            if (completed) {
+                if (existingHabit == null) {
+                    // Insert new habit completion for today
+                    database.habitDao().insert(
+                        HabitEntity(
+                            name = habit.name,
+                            description = habit.description,
+                            isCompleted = true,
+                            date = today,
+                            createdDate = habit.createdDate
+                        )
+                    )
+                } else {
+                    // Update existing habit
+                    database.habitDao().update(existingHabit.copy(isCompleted = true))
+                }
+                habit.completedDates.add(today)
+            } else {
+                if (existingHabit != null) {
+                    database.habitDao().delete(existingHabit)
+                }
+                habit.completedDates.remove(today)
+            }
+            
+            updateProgress()
+            
+            // Update widget
+            com.example.wellnessapp.widget.HabitWidgetProvider.updateWidget(requireContext())
         }
-        
-        preferencesManager.updateHabit(habit)
-        updateProgress()
-        
-        // Update widget
-        com.example.wellnessapp.widget.HabitWidgetProvider.updateWidget(requireContext())
     }
     
     private fun showAddHabitDialog() {
         val dialog = AddHabitDialogFragment { habit ->
-            preferencesManager.addHabit(habit)
-            loadHabits()
-            // Update widget
-            com.example.wellnessapp.widget.HabitWidgetProvider.updateWidget(requireContext())
+            lifecycleScope.launch {
+                // Insert a new habit entity (not completed initially)
+                database.habitDao().insert(
+                    HabitEntity(
+                        name = habit.name,
+                        description = habit.description,
+                        isCompleted = false,
+                        date = "",
+                        createdDate = habit.createdDate
+                    )
+                )
+                loadHabits()
+                // Update widget
+                com.example.wellnessapp.widget.HabitWidgetProvider.updateWidget(requireContext())
+            }
         }
         dialog.show(parentFragmentManager, "AddHabitDialog")
     }
     
     private fun showEditHabitDialog(habit: Habit) {
         val dialog = EditHabitDialogFragment(habit) { updatedHabit ->
-            preferencesManager.updateHabit(updatedHabit)
-            loadHabits()
-            // Update widget
-            com.example.wellnessapp.widget.HabitWidgetProvider.updateWidget(requireContext())
+            lifecycleScope.launch {
+                // Update all habit entities with this name and creation date
+                val allHabits = database.habitDao().getAllHabits()
+                for (entity in allHabits) {
+                    if (entity.name == habit.name && entity.createdDate == habit.createdDate) {
+                        database.habitDao().update(
+                            entity.copy(
+                                name = updatedHabit.name,
+                                description = updatedHabit.description
+                            )
+                        )
+                    }
+                }
+                loadHabits()
+                // Update widget
+                com.example.wellnessapp.widget.HabitWidgetProvider.updateWidget(requireContext())
+            }
         }
         dialog.show(parentFragmentManager, "EditHabitDialog")
     }
@@ -150,10 +222,18 @@ class HabitsFragment : Fragment() {
             .setTitle("Delete Habit")
             .setMessage("Are you sure you want to delete \"${habit.name}\"?")
             .setPositiveButton("Delete") { _, _ ->
-                preferencesManager.deleteHabit(habit.id)
-                loadHabits()
-                // Update widget
-                com.example.wellnessapp.widget.HabitWidgetProvider.updateWidget(requireContext())
+                lifecycleScope.launch {
+                    // Delete all habit entities with this name and creation date
+                    val allHabits = database.habitDao().getAllHabits()
+                    for (entity in allHabits) {
+                        if (entity.name == habit.name && entity.createdDate == habit.createdDate) {
+                            database.habitDao().delete(entity)
+                        }
+                    }
+                    loadHabits()
+                    // Update widget
+                    com.example.wellnessapp.widget.HabitWidgetProvider.updateWidget(requireContext())
+                }
             }
             .setNegativeButton("Cancel", null)
             .show()

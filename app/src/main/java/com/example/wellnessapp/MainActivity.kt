@@ -7,7 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.wellnessapp.data.preferences.PreferencesManager
+import com.example.wellnessapp.data.database.AppDatabase
+import com.example.wellnessapp.data.database.DataMigrationHelper
+import com.example.wellnessapp.data.database.entities.MoodEntity
 import com.example.wellnessapp.sensors.ShakeDetector
 import com.example.wellnessapp.sensors.StepCounter
 import com.example.wellnessapp.ui.auth.LoginActivity
@@ -17,10 +21,14 @@ import com.example.wellnessapp.ui.mood.AddMoodDialogFragment
 import com.example.wellnessapp.ui.mood.MoodFragment
 import com.example.wellnessapp.ui.settings.SettingsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     
     private lateinit var preferencesManager: PreferencesManager
+    private lateinit var database: AppDatabase
     private var bottomNavigation: BottomNavigationView? = null
     private var navigationRail: com.google.android.material.navigationrail.NavigationRailView? = null
     private lateinit var shakeDetector: ShakeDetector
@@ -30,6 +38,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         
         preferencesManager = PreferencesManager(this)
+        database = AppDatabase.getDatabase(this)
+        
+        // Migrate data from SharedPreferences to Room if needed
+        lifecycleScope.launch {
+            DataMigrationHelper.migrateDataIfNeeded(this@MainActivity)
+        }
         
         // Check if user is logged in
         if (!preferencesManager.isLoggedIn()) {
@@ -99,8 +113,19 @@ class MainActivity : AppCompatActivity() {
     private fun showQuickMoodDialog() {
         Toast.makeText(this, getString(R.string.shake_to_log_mood), Toast.LENGTH_SHORT).show()
         val dialog = AddMoodDialogFragment { moodEntry ->
-            preferencesManager.addMoodEntry(moodEntry)
-            Toast.makeText(this, "Mood logged! ${moodEntry.emoji}", Toast.LENGTH_SHORT).show()
+            lifecycleScope.launch {
+                val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date(moodEntry.timestamp))
+                database.moodDao().insert(
+                    MoodEntity(
+                        emoji = moodEntry.emoji,
+                        description = moodEntry.moodName,
+                        moodValue = moodEntry.moodValue,
+                        date = date,
+                        timestamp = moodEntry.timestamp
+                    )
+                )
+                Toast.makeText(this@MainActivity, "Mood logged! ${moodEntry.emoji}", Toast.LENGTH_SHORT).show()
+            }
         }
         dialog.show(supportFragmentManager, "QuickMoodDialog")
     }
