@@ -2,7 +2,9 @@
 
 buildscript {
     repositories {
-        google()
+        // Fix: Use explicit maven.google.com URL instead of google() shortcut
+        // This helps avoid connectivity issues with dl.google.com redirect
+        maven { url 'https://maven.google.com' }
         mavenCentral()
     }
     dependencies {
