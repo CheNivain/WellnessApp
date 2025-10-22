@@ -6,17 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wellnessapp.R
 import com.example.wellnessapp.data.models.MoodEntry
-import com.example.wellnessapp.data.preferences.PreferencesManager
+import com.example.wellnessapp.data.database.AppDatabase
+import com.example.wellnessapp.data.database.entities.MoodEntity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MoodFragment : Fragment() {
     
-    private lateinit var preferencesManager: PreferencesManager
+    private lateinit var database: AppDatabase
     private lateinit var moodRecyclerView: RecyclerView
     private lateinit var addMoodFab: FloatingActionButton
     private lateinit var shareMoodButton: MaterialButton
@@ -36,7 +41,7 @@ class MoodFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        preferencesManager = PreferencesManager(requireContext())
+        database = AppDatabase.getDatabase(requireContext())
         
         initViews(view)
         setupRecyclerView()
@@ -86,15 +91,38 @@ class MoodFragment : Fragment() {
     }
     
     private fun loadMoodEntries() {
-        moodEntries.clear()
-        moodEntries.addAll(preferencesManager.getMoodEntries().sortedByDescending { it.timestamp })
-        moodAdapter.notifyDataSetChanged()
+        lifecycleScope.launch {
+            val moodEntities = database.moodDao().getAllMoods()
+            moodEntries.clear()
+            moodEntries.addAll(moodEntities.map { entity ->
+                MoodEntry(
+                    id = entity.id.toString(),
+                    emoji = entity.emoji,
+                    moodName = entity.description,
+                    moodValue = entity.moodValue,
+                    note = "",
+                    timestamp = entity.timestamp
+                )
+            })
+            moodAdapter.notifyDataSetChanged()
+        }
     }
     
     private fun showAddMoodDialog() {
         val dialog = AddMoodDialogFragment { moodEntry ->
-            preferencesManager.addMoodEntry(moodEntry)
-            loadMoodEntries()
+            lifecycleScope.launch {
+                val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date(moodEntry.timestamp))
+                database.moodDao().insert(
+                    MoodEntity(
+                        emoji = moodEntry.emoji,
+                        description = moodEntry.moodName,
+                        moodValue = moodEntry.moodValue,
+                        date = date,
+                        timestamp = moodEntry.timestamp
+                    )
+                )
+                loadMoodEntries()
+            }
         }
         dialog.show(parentFragmentManager, "AddMoodDialog")
     }
@@ -138,8 +166,10 @@ class MoodFragment : Fragment() {
             .setTitle("Delete Mood Entry")
             .setMessage("Are you sure you want to delete this mood entry?")
             .setPositiveButton("Delete") { _, _ ->
-                preferencesManager.deleteMoodEntry(moodEntry.id)
-                loadMoodEntries()
+                lifecycleScope.launch {
+                    database.moodDao().deleteById(moodEntry.id.toInt())
+                    loadMoodEntries()
+                }
             }
             .setNegativeButton("Cancel", null)
             .show()
