@@ -1,5 +1,6 @@
 package com.example.wellnessapp.ui.onboarding
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -34,7 +35,12 @@ class OnboardingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        val data = arguments?.getSerializable(ARG_DATA) as? OnboardingData ?: return
+        @Suppress("DEPRECATION")
+        val data = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getSerializable(ARG_DATA, OnboardingData::class.java)
+        } else {
+            arguments?.getSerializable(ARG_DATA) as? OnboardingData
+        } ?: return
         
         val emojiText = view.findViewById<TextView>(R.id.emoji_text)
         val titleText = view.findViewById<TextView>(R.id.title_text)
